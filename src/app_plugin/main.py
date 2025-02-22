@@ -9,6 +9,8 @@ class MainApp:
         self.monaco_editor_plugin = MonacoEditorPlugin()
         self.current_view = None
         self.left_drawer = None
+        self.cmd = []
+        self.show_text = True
 
     def show_rst_editor(self) -> None:
         """Show the RST editor view."""
@@ -29,14 +31,37 @@ class MainApp:
             self.left_drawer.toggle()
         print("Drawer toggled")
 
+    def toggle_text(self) -> None:
+        if self.show_text:
+            for cmd in self.cmd:
+                cmd.text = ""
+            drawer_width = "w-4"
+            self.left_drawer.props('mini dense')
+        else:
+            self.cmd[0].text = "Navigation"
+            self.cmd[1].text = "RST Editor"
+            self.cmd[2].text = "Code Editor"
+            self.cmd[3].text = "Minifiy"
+            self.cmd[4].text = "Close"
+            drawer_width = "w-12"
+            self.left_drawer.props('basic')
+            
+        self.show_text = not self.show_text
+        self.left_drawer.style(f"width: {drawer_width}")
+        self.left_drawer.update()
+
     def render(self) -> None:
         """Render the main application with a navigation drawer."""
-        with ui.left_drawer(top_corner=True).classes("w-32") as left_drawer:
-            ui.label("Navigation").classes("p-4")
-            ui.button("RST Editor", icon="edit", on_click=self.show_rst_editor).classes("w-full")
-            ui.button("Monaco Editor", icon="code", on_click=self.show_monaco_editor).classes("w-full")
-            self.button2 = ui.button(icon="close").classes("w-full")
+        with ui.left_drawer(top_corner=True).classes("item stretch") as left_drawer:
+            self.cmd.append(ui.label("Navigation").classes("p-4"))
+            self.cmd.append(ui.button("RST Editor", icon="edit", on_click=self.show_rst_editor).classes("w-full"))
+            self.cmd.append(ui.button("Code Editor", icon="code", on_click=self.show_monaco_editor).classes("w-full"))
+            self.cmd.append(ui.button("Minifiy", icon="minimize", on_click=self.toggle_text).classes("w-full"))
+            self.button3 = self.cmd[-1]
+            self.cmd.append(ui.button("Close", icon="close").classes("w-full"))
+            self.button2 = self.cmd[-1]
         self.left_drawer = left_drawer
+        self.toggle_text()
 
         with ui.header().classes("w-full p-4 bg-gray-800 text-white"):
             self.button1 = ui.button(icon="apps").classes("margin-5")
@@ -46,7 +71,7 @@ class MainApp:
             with main_splitter.before:
                 self.content_area = ui.column().classes("w-full h-full")
             with main_splitter.after:
-                self.markdown_area = ui.markdown('# Information').classes("w-full h-full")
+                self._view_area = ui.card().classes("w-full h-full")
 
         # Show the default view
         self.show_rst_editor()
@@ -54,6 +79,7 @@ class MainApp:
         # Set the on_click event handlers for the buttons
         self.button1.on_click(self.toggle_drawer)
         self.button2.on_click(self.toggle_drawer)
+        self.rst_editor_plugin.register_view(self._view_area)
 
 if __name__ in {"__main__", "__mp_main__"}:
     app = MainApp()

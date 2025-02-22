@@ -1,6 +1,6 @@
+from nicegui import ui
 from docutils.core import publish_parts
 from docutils.utils import SystemMessage
-from nicegui import ui
 import os
 import json
 from watchdog.observers import Observer
@@ -12,72 +12,59 @@ class RSTEditorPlugin:
     """Pure RST editor with live preview, autosave, and linting."""
 
     AUTOSAVE_FILE = Path("rst_autosave.json")
-    STYLE_FILE = Path("custom_styles.css")
+    STYLE_FILE = Path("./application_data/_settings/custom_styles.css")
     DOCS_FOLDER = Path("./application_data/_docs")
     SETTINGS_FOLDER = Path("./application_data/_settings")
     
     def __init__(self):
         """Initialize the RST editor with default content."""
-        self.content = self.load_autosave() or "Hello from RST Plugin\n======================="
-        self.preview = None
+        self.content = self.load_autosave() or "Hello from RST Plug===in\n======================="
         self.editor = None
         self.error_box = None
+        self.view_area = None
         self._setup_autosave_watcher()
-        self.error_text = None 
+
+    def register_view(self, view_area) -> None:
+        """Register the view area for rendering the output."""
+        self.view_area = view_area
 
     def render(self) -> None:
-        """Render the editor and live preview."""
-        with ui.splitter().classes("w-full h-full") as v_splitter:
-            
-            # Left: RST Code Editor
-            with v_splitter.before:
-                with ui.row().classes("w-full h-full").style('color: active;'):
-                    ui.icon("edit").classes("text-xl margin-5")
-                    ui.label("Edit").classes("text-xl")
+        """Render the editor and linting."""
+        
+        with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
+            with h_splitter.before:
+                # Left: RST Code Editor
+                ui.label("Edit")
                 self.editor = ui.codemirror(
                     language="rst",
                     value=self.content,
                     on_change=self.update_preview
-                ).classes("w-full h-full")
-
-            # Right: Live Preview
-            with v_splitter.after:
-                
-                with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
-                    with h_splitter.before:
-                        with ui.row().classes("p-2").style('color: active;'):
-                            ui.icon("visibility").classes("text-xl margin-5")
-                            ui.label("Live Preview:").classes('text-xl')
-                        self.preview = ui.html(self._convert_rst(self.content))
-                    with h_splitter.after:
-                        ui.space()
-                        with ui.row().classes("p-2").style('color: active;'):
-                            ui.icon("rule").classes("text-xl margin-5")
-                            ui.label("Linting:").classes("text-xl")
-                        if self.error_text:
-                            self.error_box = ui.markdown(f"❌ {self.error_text}").classes("w-full h-full")
-                        self.error_box = ui.markdown("").classes("w-full h-full")  # Display linting errors
+                )
+            with h_splitter.after:
+                ui.label("Linting:")
+                self.error_box = ui.markdown("")  # Display linting errors
 
     def _convert_rst(self, rst_text: str) -> str:
         """Convert RST to HTML for live preview and linting."""
         try:
             parts = publish_parts(source=rst_text, writer_name='html')
-            html_body = parts['html_body']
-            head = '<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">'
-            custom_styles = open(self.SETTINGS_FOLDER / self.STYLE_FILE, 'r').read()
-            head += f'<style>{custom_styles}</style>'
-            head += f'</head>'
-            return head + html_body
+            head = '<head><style>'
+            head += self.STYLE_FILE.open('r').read() if self.STYLE_FILE.exists() else ''
+            head += '</style></head>'
+            rst_content = head + parts['html_body']
+            return rst_content
         except SystemMessage as e:
-            self.error_text = f"<p style='color: red;'>RST Error: {e}</p>"
-            return  custom_styles + "<html><body>Error</body></html>"
+            return f"<p style='color: red;'>RST Error: {e}</p>"
 
     def update_preview(self) -> None:
         """Update the preview and linting when text changes."""
         self.content = self.editor.value
-        self.preview.set_content(self._convert_rst(self.content))
         self.lint_rst(self.content)
         self.save_autosave(self.content)
+        if self.view_area:
+            self.view_area.clear()
+            with self.view_area:
+                ui.html(self._convert_rst(self.content))
 
     def lint_rst(self, rst_text: str) -> None:
         """Check for errors in RST syntax and show messages."""
