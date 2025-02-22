@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: #0000AA;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 1.2;
+    border-bottom: 2px solid #0000AA; /* Add a line under h1 */
+    padding-bottom: 3px; /* Add some space between the text and the line */
+}
+
+h2 {
+    color: #0000AA;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.2;
+    border-bottom: 2px solid #0000AA; /* Add a line under h2 */
+    padding-bottom: 2px; /* Add some space between the text and the line */
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+ol {
+    list-style: decimal;
+    margin-left: 20px;
+}
+
+.code {
+    background-color: #dddddd;
+    margin: 20px;
+    padding: 10px;
+    font-family: monospace;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+/* Note box */
+.note {
+    border-left: 5px solid #007bff;
+    background-color: #e7f3ff;
+    padding: 10px;
+    margin: 30px 0;
+    padding-left: 40px;
+    position: relative;
+}
+
+.note::before {
+    content: "\1F4D3"; /* Unicode for note icon */
+    font-size: 20px;
+    position: absolute;
+    left: 0px;
+    top: 8px;
+}
+
+/* Warning box */
+.warning {
+    border-left: 5px solid #ff0000;
+    background-color: #ffe7e7;
+    padding: 10px;
+    margin: 30px 0;
+    padding-left: 40px;
+    position: relative;
+}
+
+.warning::before {
+    content: "\26A0"; /* Unicode for important icon */
+    color: #ff0000;
+    font-size: 20px;
+    position: absolute;
+    left: 6px;
+    top: 8px;
+}
+
+/* Tip box */
+.tip {
+    border-left: 5px solid #28a745;
+    background-color: #e7ffe7;
+    padding: 10px;
+    margin: 30px 0;
+    padding-left: 40px;
+    position: relative;
+}
+
+.tip::before {
+    content: "\1F4A1"; /* Unicode for light bulb icon */
+    font-size: 20px;
+    position: absolute;
+    left: 0px;
+    top: 8px;
+}
+
+/* Important box */
+.important {
+    border-left: 5px solid #ffc107;
+    background-color: #fff7e7;
+    padding: 10px;
+    margin: 30px 0;
+    padding-left: 40px;
+    position: relative;
+}
+
+.important::before {
+    content: "\0021"; /* Unicode for warning icon */
+    color: #ffc107;
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    left: 14px;
+    top: 8px;
+}

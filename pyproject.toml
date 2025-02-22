@@ -1,0 +1,31 @@
+[info]
+file = "pyproject.toml"
+file-id = "e054deac-3793-479c-98df-4784133c5f22"
+project = "app_plugin"
+project-id = "4622149e-fd4c-4ea4-a697-2da2b5c76985"
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "app_plugin"
+version = "0.0.1"
+dependencies = [
+  "nicegui",
+  "stevedore",
+  "watchdog", 
+  "rich",
+  "jinja2",
+  "docutils",
+  "sphinx",
+  "sphinxcontrib-mermaid",
+]
+description = "An application with plugins."
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+target-version = ["py312", "py313"]
+line-length = 88
