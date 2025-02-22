@@ -28,15 +28,16 @@ class MainApp:
         if self.left_drawer:
             self.left_drawer.toggle()
         print("Drawer toggled")
-        
+
     def render(self) -> None:
         """Render the main application with a navigation drawer."""
         with ui.left_drawer(top_corner=True).classes("w-32") as left_drawer:
             ui.label("Navigation").classes("p-4")
             ui.button("RST Editor", icon="edit", on_click=self.show_rst_editor).classes("w-full")
-            ui.button("Editor", icon="code", on_click=self.show_monaco_editor).classes("w-full")
+            ui.button("Monaco Editor", icon="code", on_click=self.show_monaco_editor).classes("w-full")
             self.button2 = ui.button(icon="close").classes("w-full")
         self.left_drawer = left_drawer
+
         with ui.header().classes("w-full p-4 bg-gray-800 text-white"):
             self.button1 = ui.button(icon="apps").classes("margin-5")
             ui.label("Plugin powered application").classes("text-2xl")
@@ -49,10 +50,10 @@ class MainApp:
 
         # Show the default view
         self.show_rst_editor()
-        
-        self.button1.on_click = self.toggle_drawer
-        self.button2.on_click = self.toggle_drawer
-        
+
+        # Set the on_click event handlers for the buttons
+        self.button1.on_click(self.toggle_drawer)
+        self.button2.on_click(self.toggle_drawer)
 
 if __name__ in {"__main__", "__mp_main__"}:
     app = MainApp()
