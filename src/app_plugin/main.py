@@ -35,10 +35,10 @@ class MainApp:
             ui.label("Navigation").classes("p-4")
             ui.button("RST Editor", icon="edit", on_click=self.show_rst_editor).classes("w-full")
             ui.button("Editor", icon="code", on_click=self.show_monaco_editor).classes("w-full")
-            ui.button(icon="close", on_click=self.toggle_drawer()).classes("w-full")
+            self.button2 = ui.button(icon="close").classes("w-full")
         self.left_drawer = left_drawer
         with ui.header().classes("w-full p-4 bg-gray-800 text-white"):
-            ui.button(icon="apps", on_click=self.toggle_drawer()).classes("margin-5")
+            self.button1 = ui.button(icon="apps").classes("margin-5")
             ui.label("Plugin powered application").classes("text-2xl")
 
         with ui.splitter().classes("w-full h-full") as main_splitter:
@@ -49,6 +49,10 @@ class MainApp:
 
         # Show the default view
         self.show_rst_editor()
+        
+        self.button1.on_click = self.toggle_drawer
+        self.button2.on_click = self.toggle_drawer
+        
 
 if __name__ in {"__main__", "__mp_main__"}:
     app = MainApp()
