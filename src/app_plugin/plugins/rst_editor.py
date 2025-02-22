@@ -31,7 +31,7 @@ class RSTEditorPlugin:
             
             # Left: RST Code Editor
             with v_splitter.before:
-                with ui.row().classes("p-2").style('color: active;'):
+                with ui.row().classes("w-full h-full").style('color: active;'):
                     ui.icon("edit").classes("text-xl margin-5")
                     ui.label("Edit").classes("text-xl")
                 self.editor = ui.codemirror(
