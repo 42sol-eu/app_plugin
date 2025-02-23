@@ -18,6 +18,7 @@ class RSTEditorPlugin(PluginView):
     STYLE_FILE = Path("./application_data/_settings/custom_styles.css")
     DOCS_FOLDER = Path("./application_data/_docs")
     SETTINGS_FOLDER = Path("./application_data/_settings")
+    name = "RST Editor"
     
     def __init__(self):
         """Initialize the RST editor with default content."""

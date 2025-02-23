@@ -12,7 +12,7 @@ else:
     # we are running as a package
     reload = False
 
-from . import api_router
+from . import api_router_extended
 from . import settings_page
 from . import main_page
 from . import theme
@@ -22,55 +22,40 @@ from nicegui import app, ui
 import stevedore._cache
 from pathlib import Path
 
-# Patch the _hash_settings_for_path method
-original_hash_settings_for_path = stevedore._cache._hash_settings_for_path
-
-def patched_hash_settings_for_path(path):
-    h = original_hash_settings_for_path(path)
-    for entry in path.iterdir():
-        if isinstance(entry, Path):
-            entry = str(entry)
-        h.update(entry.encode('utf-8'))
-    return h
-
-stevedore._cache._hash_settings_for_path = patched_hash_settings_for_path
-
 # Your existing code
-from stevedore import driver, ExtensionManager
+from importlib.metadata import entry_points
 from .plugin_view import PluginView
-
+from . import api_router_extended 
 
 def load_plugins():
-    manager = ExtensionManager(
-        namespace='app_plugin.plugins',
-        invoke_on_load=True,
-        invoke_args=(),
-    )
-    for extension in manager:
-        plugin = extension.obj
+    plugins = entry_points(group='app_plugin.plugins')
+    print(f"Loading: {[ep.name for ep in plugins]}")
+    for ep in plugins:
+        plugin = ep.load()
         if isinstance(plugin, PluginView):
             print(f"Loading plugin: {plugin.name}")
-            plugin.execute()
+            plugin().execute()
         else:
             print(f"Plugin {plugin.name} is not a PluginView")
 
-
+# [Main]
 @ui.page('/')
 def index_page() -> None:
     with theme.frame('Main Page'):
         main_page.content()
 
 
-if __name__ in {"__main__", "__mp_main__"}:
-    print("Starting main page content")
+if __name__ == "__main__":
+    print("Loading plugins")
     load_plugins()
 
+    print("Loading GUI")
     settings_page.SettingsPage()
 
-    app.include_router(api_router.router)
+    app.include_router(api_router_extended.router)
 
     ui.run(title='App with Plugins',
-           reload=reload,
+           reload=False,
            native=False,)
     print("UI is running")
 

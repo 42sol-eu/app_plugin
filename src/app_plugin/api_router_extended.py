@@ -8,17 +8,17 @@ project-id:     dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
 author:         felix@42sol.eu
 
 description: |
-    This module implements the route  for `app_plugin`.
+    This module implements the route for `app_plugin`.
 """
 
 # [Imports]
-from . import theme
-from .message import message
-
 from nicegui import APIRouter, ui
 
 # NOTE: the APIRouter does not yet work with NiceGUI On Air (see https://github.com/zauberzeug/nicegui/discussions/2792)
 router = APIRouter(prefix='/c')
+
+from . import theme
+from .message import message
 
 # [Pages]
 @router.page('/')

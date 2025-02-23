@@ -15,7 +15,8 @@ class MonacoEditorPlugin(PluginView):
     AUTOSAVE_FILE = Path("monaco_autosave.json")
     DOCS_FOLDER = Path("./application_data/_docs")
     SETTINGS_FOLDER = Path("./application_data/_settings")
-
+    name = "Monaco Editor"
+    
     def __init__(self):
         """Initialize the Monaco editor with default content."""
         self.content = self.load_autosave() or "# Hello from Monaco Editor Plugin\nprint('Hello, World!')"
