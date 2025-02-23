@@ -15,20 +15,42 @@ description: |
 from contextlib import contextmanager
 
 from menu import menu
+from  help_page import HelpPage
+import icon
+from toggle_button import ToggleButton
 
 from nicegui import ui
+button_help = None 
+button_menu = None
+menu_drawer = None
 
-
+# [Code]
 @contextmanager
 def frame(navigation_title: str):
+    global menu_drawer
+    global button_menu
+    global button_help
+
     """Custom page frame to share the same styling and behavior across all pages"""
     ui.colors(primary='#6E93D6', secondary='#53B689', accent='#111B1E', positive='#53B689')
     with ui.header():
+        button_menu = ToggleButton(icon=icon.menu)
         ui.label('App with Plugins').classes('font-bold')
         ui.space()
-        ui.label(navigation_title)
+        ui.label(navigation_title).classes('text-2xl font-bold')
         ui.space()
-        with ui.row():
-            menu()
-    with ui.column().classes('absolute-center items-center'):
+        button_help = ToggleButton(icon=icon.help)
+
+    with ui.left_drawer() as menu_drawer:
+        menu(menu_drawer, button_menu)
+
+    with ui.right_drawer() as help_drawer:
+        HelpPage()
+    
+    with ui.column().classes('w-full h-full absolute-center items-center'):
         yield
+
+    button_menu.on('click', menu_drawer.toggle)
+    
+    button_help.on('click', help_drawer.toggle)
+    

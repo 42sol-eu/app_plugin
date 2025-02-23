@@ -11,10 +11,17 @@ description: |
     This module implements the menu GUI  for `app_plugin`.
 """
 from nicegui import ui
+import icon
 
-
-def menu() -> None:
-    ui.link('Home', '/').classes(replace='text-white')
-    ui.link('Settings', '/settings').classes(replace='text-white')
-    ui.link('B', '/b').classes(replace='text-white')
-    ui.link('C', '/c').classes(replace='text-white')
+def menu(drawer,button) -> None:
+    with ui.column().classes(add='w-full h-full'):
+        ui.label('Menu:').classes(add='font-bold text-xl')
+        with ui.link('Home', '/').classes(add='text-xl'):
+            ui.icon(icon.home).classes(add='text-xl')
+        ui.link('Settings', '/settings').classes(add='text-xl')
+        ui.link('B', '/b').classes(add='text-xl')
+        ui.link('C', '/c').classes(add='text-xl')
+        ui.button(icon=icon.close) \
+            .on('click', drawer.toggle) \
+            .on('click', button.toggle) \
+            .classes(add='absolute bottom-0 center-0 m-4')
