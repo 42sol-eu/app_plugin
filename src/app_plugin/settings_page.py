@@ -12,9 +12,9 @@ description: |
 """
 
 # [Imports]
-import theme
-from message import message
-import icon
+from . import theme
+from .message import message
+from . import icon
 
 from nicegui import ui
 

@@ -2,7 +2,7 @@ import os
 import yaml
 from nicegui import ui, app
 from typing import List, Dict
-
+# TODO: make the code usable in app_plugin
 # Directory for storing snippets
 SNIPPET_DIR = "_snippets"
 

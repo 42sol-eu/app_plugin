@@ -12,8 +12,8 @@ description: |
 """
 
 # [Imports]
-import theme
-from message import message
+from . import theme
+from .message import message
 
 from nicegui import APIRouter, ui
 

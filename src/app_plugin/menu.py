@@ -11,7 +11,7 @@ description: |
     This module implements the menu GUI  for `app_plugin`.
 """
 from nicegui import ui
-import icon
+from . import icon
 
 def menu(drawer,button) -> None:
     with ui.column().classes(add='w-full h-full'):

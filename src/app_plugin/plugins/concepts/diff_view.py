@@ -5,7 +5,8 @@ import zipfile
 from pathlib import Path
 from nicegui import ui
 from typing import List, Dict
-
+import difflib
+# TODO: make the code usable in app_plugin
 SNIPPET_DIR = Path("_snippets")
 IMPORT_DIR = Path("_imported_snippets")
 
@@ -35,13 +36,29 @@ def import_snippets(file: Path):
 
         if target_file.exists():
             with ui.dialog() as dlg:
-                ui.label(f"Snippet '{yaml_file.name}' already exists. Overwrite?")
+                ui.label(f"Snippet '{yaml_file.name}' already exists. Do you want to overwrite or skip?")
+                
                 with ui.row():
+                    ui.button("Show Diff", on_click=lambda: show_diff(yaml_file, target_file))
                     ui.button("Overwrite", on_click=lambda: overwrite_snippet(yaml_file, target_file, dlg))
                     ui.button("Skip", on_click=dlg.close)
             dlg.open()
         else:
             shutil.move(str(yaml_file), str(target_file))
+
+    def show_diff(new_file: Path, old_file: Path):
+        """Show the diff between the existing and the imported snippet."""
+        with open(new_file, "r") as nf, open(old_file, "r") as of:
+            new_content = nf.readlines()
+            old_content = of.readlines()
+        
+        diff = difflib.unified_diff(old_content, new_content, fromfile="Existing", tofile="Imported", lineterm="")
+        
+        # Display diff content in a scrollable box
+        diff_view = ui.column()
+        diff_view.style("max-height: 300px; overflow-y: auto;")
+        for line in diff:
+            diff_view.label(line)
 
     def overwrite_snippet(src: Path, dest: Path, dlg):
         """Overwrite an existing snippet."""
@@ -72,6 +89,6 @@ def snippet_share_stepper():
         ui.button("Finish", on_click=stepper.reset)
 
 # UI Integration
-ui.label("Snippet Export & Import with Overwrite Handling")
+ui.label("Snippet Export & Import with Diff View")
 snippet_share_stepper()
 ui.run()

@@ -1,3 +1,4 @@
+# [Imports]
 from nicegui import ui
 import os
 import json
@@ -5,8 +6,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import threading
 from pathlib import Path
+from ..plugin_view import PluginView
 
-class MonacoEditorPlugin:
+# [Class::PluginView]
+class MonacoEditorPlugin(PluginView):
     """Monaco-based Python code editor with log view."""
 
     AUTOSAVE_FILE = Path("monaco_autosave.json")

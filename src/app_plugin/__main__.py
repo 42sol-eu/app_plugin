@@ -1,37 +1,78 @@
-
-
 #!/usr/bin/env python3
 # [Includes]
-import api_router
-import settings_page
-import main_page
-import theme
+import os 
+from pathlib import Path
+import sys
+sys.path.append(Path(__file__).parent)  
+
+if __package__ is None or __package__ == '':
+    reload = True
+    __package__ = "app_plugin"
+else:
+    # we are running as a package
+    reload = False
+
+from . import api_router
+from . import settings_page
+from . import main_page
+from . import theme
 
 from nicegui import app, ui
 
+import stevedore._cache
+from pathlib import Path
 
-# Example 1: use a custom page decorator directly and putting the content creation into a separate function
+# Patch the _hash_settings_for_path method
+original_hash_settings_for_path = stevedore._cache._hash_settings_for_path
+
+def patched_hash_settings_for_path(path):
+    h = original_hash_settings_for_path(path)
+    for entry in path.iterdir():
+        if isinstance(entry, Path):
+            entry = str(entry)
+        h.update(entry.encode('utf-8'))
+    return h
+
+stevedore._cache._hash_settings_for_path = patched_hash_settings_for_path
+
+# Your existing code
+from stevedore import driver, ExtensionManager
+from .plugin_view import PluginView
+
+
+def load_plugins():
+    manager = ExtensionManager(
+        namespace='app_plugin.plugins',
+        invoke_on_load=True,
+        invoke_args=(),
+    )
+    for extension in manager:
+        plugin = extension.obj
+        if isinstance(plugin, PluginView):
+            print(f"Loading plugin: {plugin.name}")
+            plugin.execute()
+        else:
+            print(f"Plugin {plugin.name} is not a PluginView")
+
+
 @ui.page('/')
 def index_page() -> None:
-    with theme.frame('Homepage'):
+    with theme.frame('Main Page'):
         main_page.content()
 
 
+if __name__ in {"__main__", "__mp_main__"}:
+    print("Starting main page content")
+    load_plugins()
 
-# Example 3: use a class to move the whole page creation into a separate file
-settings_page.SettingsPage()
+    settings_page.SettingsPage()
 
-# Example 4: use APIRouter as described in https://nicegui.io/documentation/page#modularize_with_apirouter
-app.include_router(api_router.router)
+    app.include_router(api_router.router)
 
-ui.run(title='App with Plugins')
+    ui.run(title='App with Plugins',
+           reload=reload,
+           native=False,)
+    print("UI is running")
 
-if 0:
-    # TODO: integrate the RSTEditorPlugin into the app
-    from nicegui import ui
-    from plugins.rst_editor import RSTEditorPlugin
+# TODO: integrate the RSTEditorPlugin into the app
 
-    editor_plugin = RSTEditorPlugin()
-    editor_plugin.render()
-
-    ui.run()

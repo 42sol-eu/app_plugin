@@ -8,7 +8,10 @@ from watchdog.events import FileSystemEventHandler
 import threading
 from pathlib import Path
 
-class RSTEditorPlugin:
+from ..plugin_view import PluginView
+
+# [Class::PluginView]
+class RSTEditorPlugin(PluginView):
     """Pure RST editor with live preview, autosave, and linting."""
 
     AUTOSAVE_FILE = Path("rst_autosave.json")

@@ -14,10 +14,10 @@ description: |
 # [Imports]
 from contextlib import contextmanager
 
-from menu import menu
-from  help_page import HelpPage
-import icon
-from toggle_button import ToggleButton
+from .menu import menu
+from .help_page import HelpPage
+from . import icon
+from .toggle_button import ToggleButton
 
 from nicegui import ui
 button_help = None 
