@@ -27,6 +27,7 @@ app.include_router(api_router.router)
 ui.run(title='App with Plugins')
 
 if 0:
+    # TODO: integrate the RSTEditorPlugin into the app
     from nicegui import ui
     from plugins.rst_editor import RSTEditorPlugin
 
