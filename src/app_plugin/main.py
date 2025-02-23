@@ -36,7 +36,7 @@ class MainApp:
             for cmd in self.cmd:
                 cmd.text = ""
             drawer_width = "w-4"
-            self.left_drawer.props('mini dense')
+            self.left_drawer.props(add='mini dense')
         else:
             self.cmd[0].text = "Navigation"
             self.cmd[1].text = "RST Editor"
@@ -45,6 +45,7 @@ class MainApp:
             self.cmd[4].text = "Close"
             drawer_width = "w-12"
             self.left_drawer.props('basic')
+            self.left_drawer.props(remove='mini dense')
             
         self.show_text = not self.show_text
         self.left_drawer.style(f"width: {drawer_width}")

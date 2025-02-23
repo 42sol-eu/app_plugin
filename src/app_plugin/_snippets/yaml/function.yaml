@@ -1,0 +1,5 @@
+label: "def"
+insertText: |
+  def ${1:function_name}(${2:args}):
+      ${3:pass}
+detail: "Python Function Template"
