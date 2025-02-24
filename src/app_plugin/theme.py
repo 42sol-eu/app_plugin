@@ -23,13 +23,15 @@ from nicegui import ui
 button_help = None 
 button_menu = None
 menu_drawer = None
+view_area = None
 
 # [Code]
 @contextmanager
-def frame(navigation_title: str):
+def frame(navigation_title: str, loaded_plugins):
     global menu_drawer
     global button_menu
     global button_help
+    global view_area
 
     """Custom page frame to share the same styling and behavior across all pages"""
     ui.colors(primary='#6E93D6', secondary='#53B689', accent='#111B1E', positive='#53B689')
@@ -42,10 +44,10 @@ def frame(navigation_title: str):
         button_help = ToggleButton(icon=icon.help)
 
     with ui.left_drawer() as menu_drawer:
-        menu(menu_drawer, button_menu)
+        menu(menu_drawer, button_menu, plugins=loaded_plugins)
 
     with ui.right_drawer() as help_drawer:
-        HelpPage()
+        view_area = HelpPage()
     
     with ui.column().classes('w-full h-full absolute-center items-center'):
         yield

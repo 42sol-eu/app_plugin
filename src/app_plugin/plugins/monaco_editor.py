@@ -6,7 +6,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import threading
 from pathlib import Path
+
 from ..plugin_view import PluginView
+from .. import theme
+from ..message import message
 
 # [Class::PluginView]
 class MonacoEditorPlugin(PluginView):
@@ -16,32 +19,41 @@ class MonacoEditorPlugin(PluginView):
     DOCS_FOLDER = Path("./application_data/_docs")
     SETTINGS_FOLDER = Path("./application_data/_settings")
     name = "Monaco Editor"
-    
-    def __init__(self):
+
+    def __init__(self, loaded_plugins):
         """Initialize the Monaco editor with default content."""
         self.content = self.load_autosave() or "# Hello from Monaco Editor Plugin\nprint('Hello, World!')"
         self.editor = None
         self.log_view = None
         self._setup_autosave_watcher()
+        self.create_page(loaded_plugins)
 
-    def render(self) -> None:
-        """Render the editor and log view."""
-        with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
-            
-            # Top: Monaco Code Editor
-            with h_splitter.before:
-                with ui.row().classes("p-2").style('color: active;'):
-                    ui.icon("code").classes("text-xl margin-5")
-                    ui.label("Monaco Editor").classes("text-xl")
-                self.editor = ui.element('div').classes("w-full h-full").style('height: 400px;')
-                self.initialize_monaco_editor()
+    def create_page(self, loaded_plugins) -> None:
+        @ui.page('/monaco_editor')
+        def page() -> None:
+            with theme.frame('Monaco Editor', loaded_plugins):
+                message('Page Monaco Editor')
 
-            # Bottom: Log View
-            with h_splitter.after:
-                with ui.row().classes("p-2").style('color: active;'):
-                    ui.icon("list_alt").classes("text-xl margin-5")
-                    ui.label("Log View").classes("text-xl")
-                self.log_view = ui.textarea().classes("w-full h-full")
+                """Render the editor and log view."""
+                with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
+                    with h_splitter.before:
+                        with ui.row().classes("p-2").style('color: active;'):
+                            ui.icon("code").classes("text-xl margin-5")
+                            ui.label("Monaco Editor").classes("text-xl")
+                        self.editor = ui.element('div').classes("w-full h-full").style('height: 400px;')
+                        self.initialize_monaco_editor()
+
+                    with h_splitter.after:
+                        with ui.row().classes("p-2").style('color: active;'):
+                            ui.icon("list_alt").classes("text-xl margin-5")
+                            ui.label("Log View").classes("text-xl")
+                        self.log_view = ui.textarea().classes("w-full h-full")
+
+    def register_view(self, view_area) -> None:
+        """Register the view area for rendering the output."""
+        print(f"Registering view area {view_area=}")
+        
+        self.view_area = view_area
 
     def initialize_monaco_editor(self) -> None:
         """Initialize the Monaco editor within the custom element."""

@@ -25,38 +25,49 @@ from pathlib import Path
 # Your existing code
 from importlib.metadata import entry_points
 from .plugin_view import PluginView
-from . import api_router_extended 
+from .menu import menu
 
 def load_plugins():
     plugins = entry_points(group='app_plugin.plugins')
     print(f"Loading: {[ep.name for ep in plugins]}")
+    loaded_plugins = {}
     for ep in plugins:
-        plugin = ep.load()
-        if isinstance(plugin, PluginView):
-            print(f"Loading plugin: {plugin.name}")
-            plugin().execute()
+        plugin_class = ep.load()
+        if issubclass(plugin_class, PluginView):
+            print(f"Loading plugin: {plugin_class.__name__}")
+            loaded_plugins[ep.name] = ep
         else:
-            print(f"Plugin {plugin.name} is not a PluginView")
+            print(f"Plugin {plugin_class.__name__} is not a PluginView")
+    return loaded_plugins
 
 # [Main]
 @ui.page('/')
 def index_page() -> None:
-    with theme.frame('Main Page'):
+    global loaded_plugins
+    with theme.frame('Main Page', loaded_plugins.keys()):
         main_page.content()
 
+    for key, plugin in loaded_plugins.items():
+        print(f"Create instance: {key}")
+        plugin_class = plugin.load()
+        plugin_instance = plugin_class(loaded_plugins.keys())
+        plugin_instance.register_view(theme.view_area)
 
 if __name__ == "__main__":
     print("Loading plugins")
-    load_plugins()
+    loaded_plugins = load_plugins()
+    
+    
 
     print("Loading GUI")
-    settings_page.SettingsPage()
+    settings_page.SettingsPage(loaded_plugins)
 
     app.include_router(api_router_extended.router)
 
-    ui.run(title='App with Plugins',
-           reload=False,
-           native=False,)
+    # Create the menu with the loaded plugins
+    menu(drawer=ui.left_drawer(), button=ui.button(), plugins=loaded_plugins)
+
+    ui.run(title='App with Plugins', reload=False, native=False)
     print("UI is running")
 
 # TODO: integrate the RSTEditorPlugin into the app

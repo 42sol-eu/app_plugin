@@ -18,16 +18,20 @@ from . import message
 
 from nicegui import ui
 
-
 # [Code]
 class HelpPage:
     def load_settings_to_ui(self, section: str) -> None:
         pass
 
     def __init__(self) -> None:
-        """The page is created as soon as the class is instantiated.
-
-            """
-                        
-        ui.markdown('This is the help page.')
-            
+        """The page is created as soon as the class is instantiated."""
+        with ui.card().classes('w-full h-full') as card:
+            self.html_element = ui.html('This is the help page.').classes('w-full h-full')
+        self._main = card
+    
+    def clear(self):
+        self.html_element.set_content('')  # Clear the content of the html element
+    
+    def set_content(self, text: str):
+        self.html_element.set_content(text)  # Update the content of the html element
+        self.html_element.update()

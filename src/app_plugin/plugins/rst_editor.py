@@ -9,8 +9,9 @@ import threading
 from pathlib import Path
 
 from ..plugin_view import PluginView
+from .. import theme
+from ..message import message
 
-# [Class::PluginView]
 class RSTEditorPlugin(PluginView):
     """Pure RST editor with live preview, autosave, and linting."""
 
@@ -20,33 +21,37 @@ class RSTEditorPlugin(PluginView):
     SETTINGS_FOLDER = Path("./application_data/_settings")
     name = "RST Editor"
     
-    def __init__(self):
+    def __init__(self, loaded_plugins):
         """Initialize the RST editor with default content."""
-        self.content = self.load_autosave() or "Hello from RST Plug===in\n======================="
+        self.content = self.load_autosave() or "Hello from RST Plugin\n======================="
         self.editor = None
         self.error_box = None
-        self.view_area = None
         self._setup_autosave_watcher()
+        self.create_page(loaded_plugins)
+
+    def create_page(self, loaded_plugins) -> None:
+        @ui.page('/rst_editor')
+        def page() -> None:
+            """Render the editor and linting."""
+            with theme.frame('Monaco Editor', loaded_plugins):
+                message('Page Monaco Editor')
+            
+                with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
+                    with h_splitter.before:
+                        # Left: RST Code Editor
+                        ui.label("Edit")
+                        self.editor = ui.codemirror(
+                            language="rst",
+                            value=self.content,
+                            on_change=self.update_preview
+                        )
+                    with h_splitter.after:
+                        ui.label("Linting:")
+                        self.error_box = ui.markdown("")  # Display linting errors
 
     def register_view(self, view_area) -> None:
         """Register the view area for rendering the output."""
         self.view_area = view_area
-
-    def render(self) -> None:
-        """Render the editor and linting."""
-        
-        with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
-            with h_splitter.before:
-                # Left: RST Code Editor
-                ui.label("Edit")
-                self.editor = ui.codemirror(
-                    language="rst",
-                    value=self.content,
-                    on_change=self.update_preview
-                )
-            with h_splitter.after:
-                ui.label("Linting:")
-                self.error_box = ui.markdown("")  # Display linting errors
 
     def _convert_rst(self, rst_text: str) -> str:
         """Convert RST to HTML for live preview and linting."""
@@ -66,9 +71,8 @@ class RSTEditorPlugin(PluginView):
         self.lint_rst(self.content)
         self.save_autosave(self.content)
         if self.view_area:
-            self.view_area.clear()
-            with self.view_area:
-                ui.html(self._convert_rst(self.content))
+            print(f"Updating view area")
+            self.view_area.set_content(self._convert_rst(self.content))
 
     def lint_rst(self, rst_text: str) -> None:
         """Check for errors in RST syntax and show messages."""
