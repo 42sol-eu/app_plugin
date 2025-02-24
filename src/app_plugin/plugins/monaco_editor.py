@@ -32,8 +32,6 @@ class MonacoEditorPlugin(PluginView):
         @ui.page('/monaco_editor')
         def page() -> None:
             with theme.frame('Monaco Editor', loaded_plugins):
-                message('Page Monaco Editor')
-
                 """Render the editor and log view."""
                 with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
                     with h_splitter.before:
@@ -53,7 +51,7 @@ class MonacoEditorPlugin(PluginView):
         """Register the view area for rendering the output."""
         print(f"Registering view area {view_area=}")
         
-        self.view_area = view_area
+        self.view_area = None
 
     def initialize_monaco_editor(self) -> None:
         """Initialize the Monaco editor within the custom element."""

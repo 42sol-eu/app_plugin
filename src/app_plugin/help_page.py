@@ -17,6 +17,7 @@ from . import theme
 from . import message
 
 from nicegui import ui
+from pathlib import Path
 
 # [Code]
 class HelpPage:
@@ -26,12 +27,17 @@ class HelpPage:
     def __init__(self) -> None:
         """The page is created as soon as the class is instantiated."""
         with ui.card().classes('w-full h-full') as card:
-            self.html_element = ui.html('This is the help page.').classes('w-full h-full')
-        self._main = card
-    
+            if Path('help.html').exists():
+                with open('help.html', 'r') as f:
+                    self.html_element = ui.html(f.read()).classes('w-full h-full')
+            else:
+                self.html_element = ui.html('no content found.').classes('w-full h-full')
+
     def clear(self):
         self.html_element.set_content('')  # Clear the content of the html element
     
     def set_content(self, text: str):
+        with open('help.html', 'w') as f:
+            f.write(text)
         self.html_element.set_content(text)  # Update the content of the html element
         self.html_element.update()

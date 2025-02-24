@@ -33,9 +33,7 @@ class RSTEditorPlugin(PluginView):
         @ui.page('/rst_editor')
         def page() -> None:
             """Render the editor and linting."""
-            with theme.frame('Monaco Editor', loaded_plugins):
-                message('Page Monaco Editor')
-            
+            with theme.frame('RST Editor', loaded_plugins):
                 with ui.splitter().classes("w-full h-full").props("horizontal") as h_splitter:
                     with h_splitter.before:
                         # Left: RST Code Editor
@@ -48,7 +46,8 @@ class RSTEditorPlugin(PluginView):
                     with h_splitter.after:
                         ui.label("Linting:")
                         self.error_box = ui.markdown("")  # Display linting errors
-
+            self.view_area = theme.view_area
+            
     def register_view(self, view_area) -> None:
         """Register the view area for rendering the output."""
         self.view_area = view_area
