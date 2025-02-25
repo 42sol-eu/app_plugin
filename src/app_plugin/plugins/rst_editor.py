@@ -1,13 +1,29 @@
-from nicegui import ui
+"""
+Plugin RST Editor
+
+file:           src/app_plugin/plugins/rst_editor.py
+file-id:        5539b2c3-788d-4566-a204-1d711a035108
+project:        app_plugin
+project-id:     dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
+author:         felix@42sol.eu
+
+description: |
+    This module implements the "RST Editor" plugin  for `app_plugin`.
+"""
+# [Include, global]
+from nicegui import ui, app
 from docutils.core import publish_parts
 from docutils.utils import SystemMessage
+
 import os
 import json
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import threading
 from pathlib import Path
+from docutils.utils import SystemMessage
 
+# [Imports from app_plugin]
 from ..plugin_view import PluginView
 from .. import theme
 from ..message import message
@@ -16,9 +32,9 @@ class RSTEditorPlugin(PluginView):
     """Pure RST editor with live preview, autosave, and linting."""
 
     AUTOSAVE_FILE = Path("rst_autosave.json")
-    STYLE_FILE = Path("./application_data/_settings/custom_styles.css")
-    DOCS_FOLDER = Path("./application_data/_docs")
-    SETTINGS_FOLDER = Path("./application_data/_settings")
+    DOCS_FOLDER = app.settings['_docs']
+    SETTINGS_FOLDER = app.settings['_settings']
+    
     name = "RST Editor"
     
     def __init__(self, loaded_plugins):
@@ -52,18 +68,6 @@ class RSTEditorPlugin(PluginView):
         """Register the view area for rendering the output."""
         self.view_area = view_area
 
-    def _convert_rst(self, rst_text: str) -> str:
-        """Convert RST to HTML for live preview and linting."""
-        try:
-            parts = publish_parts(source=rst_text, writer_name='html')
-            head = '<head><style>'
-            head += self.STYLE_FILE.open('r').read() if self.STYLE_FILE.exists() else ''
-            head += '</style></head>'
-            rst_content = head + parts['html_body']
-            return rst_content
-        except SystemMessage as e:
-            return f"<p style='color: red;'>RST Error: {e}</p>"
-
     def update_preview(self) -> None:
         """Update the preview and linting when text changes."""
         self.content = self.editor.value
@@ -71,7 +75,7 @@ class RSTEditorPlugin(PluginView):
         self.save_autosave(self.content)
         if self.view_area:
             print(f"Updating view area")
-            self.view_area.set_content(self._convert_rst(self.content))
+            self.view_area.set_content(self.content)
 
     def lint_rst(self, rst_text: str) -> None:
         """Check for errors in RST syntax and show messages."""
@@ -84,14 +88,15 @@ class RSTEditorPlugin(PluginView):
     def save_autosave(self, content: str) -> None:
         """Save the editor content to a file."""
         with open(self.AUTOSAVE_FILE, "w") as f:
-            json.dump({"content": content}, f)
+            f.write(content)
 
-    def load_autosave(self) -> str:
+    def load_autosave(self, title : str = "index") -> str:
         """Load autosaved content, if available."""
-        if os.path.exists(self.DOCS_FOLDER / self.AUTOSAVE_FILE):
-            with open(self.AUTOSAVE_FILE, "r") as f:
-                data = json.load(f)
-                return data.get("content", "")
+        RSTEditorPlugin.AUTOSAVE_FILE = app.settings['_docs']  / f'{title}.rst'
+        if os.path.exists(RSTEditorPlugin.AUTOSAVE_FILE):
+            with open(RSTEditorPlugin.AUTOSAVE_FILE, "r") as f:
+                rst_content = f.read()
+                return rst_content
         return None
 
     def _setup_autosave_watcher(self) -> None:
@@ -100,11 +105,9 @@ class RSTEditorPlugin(PluginView):
             def on_modified(self, event):
                 if event.src_path == RSTEditorPlugin.AUTOSAVE_FILE:
                     with open(event.src_path, "r") as f:
-                        data = json.load(f)
-                        new_content = data.get("content", "")
-                        self.content = new_content
-                        self.editor.set_content(new_content)
-                        self.preview.set_content(self._convert_rst(new_content))
+                        rst_content = f.read()
+                        self.content = rst_content
+                        self.editor.set_content(rst_content)
 
         observer = Observer()
         event_handler = AutoSaveHandler()

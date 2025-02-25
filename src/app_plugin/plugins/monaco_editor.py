@@ -1,5 +1,17 @@
-# [Imports]
-from nicegui import ui
+"""
+Plugin Code Editor
+
+file:         src/app_plugin/plugins/monaco_editor.py
+file-id:      5539b2c3-788d-4566-a204-1d711a035108
+project:      app_plugin
+project-id:   dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
+author:       felix@42sol.eu
+
+description: |
+    This module implements the "Monaco Code Editor" plugin  for `app_plugin`.
+"""
+# [Imports, global]
+from nicegui import ui, app
 import os
 import json
 from watchdog.observers import Observer
@@ -7,6 +19,7 @@ from watchdog.events import FileSystemEventHandler
 import threading
 from pathlib import Path
 
+# [Imports from app_plugin]
 from ..plugin_view import PluginView
 from .. import theme
 from ..message import message
@@ -16,8 +29,8 @@ class MonacoEditorPlugin(PluginView):
     """Monaco-based Python code editor with log view."""
 
     AUTOSAVE_FILE = Path("monaco_autosave.json")
-    DOCS_FOLDER = Path("./application_data/_docs")
-    SETTINGS_FOLDER = Path("./application_data/_settings")
+    DOCS_FOLDER = app.settings['_docs']
+    SETTINGS_FOLDER = app.settings['_settings']
     name = "Monaco Editor"
 
     def __init__(self, loaded_plugins):
@@ -82,7 +95,7 @@ class MonacoEditorPlugin(PluginView):
 
     def load_autosave(self) -> str:
         """Load autosaved content, if available."""
-        if os.path.exists(self.DOCS_FOLDER / self.AUTOSAVE_FILE):
+        if os.path.exists(app.settings['_docs']  / self.AUTOSAVE_FILE):
             with open(self.AUTOSAVE_FILE, "r") as f:
                 data = json.load(f)
                 return data.get("content", "")

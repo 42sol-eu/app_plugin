@@ -20,7 +20,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from . import message
 
-from nicegui import ui
+from nicegui import ui, app
 
 
 def content() -> None:

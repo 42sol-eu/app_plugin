@@ -17,7 +17,7 @@ from .message import message
 from . import icon
 from . import theme
 
-from nicegui import ui
+from nicegui import ui, app
 
 
 # [Code]

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# [Includes]
+# [Imports, global]
 import os 
 from pathlib import Path
 import sys
+from nicegui import ui, app
 sys.path.append(Path(__file__).parent)  
 
 if __package__ is None or __package__ == '':
@@ -11,6 +12,12 @@ if __package__ is None or __package__ == '':
 else:
     # we are running as a package
     reload = False
+
+
+# [Imports from app_plugin]
+app.settings = {}
+app.settings['_docs'] = Path('./application_data/_docs')
+app.settings['_settings'] = Path('./application_data/_settings')
 
 from . import api_router_extended
 from . import settings_page

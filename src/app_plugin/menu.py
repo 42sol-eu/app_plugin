@@ -10,7 +10,7 @@ author:         felix@42sol.eu
 description: |
     This module implements the menu GUI  for `app_plugin`.
 """
-from nicegui import ui
+from nicegui import ui, app
 from . import icon
 from .toggle_button import ToggleButton
 

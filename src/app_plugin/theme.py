@@ -19,7 +19,7 @@ from .help_page import HelpPage
 from . import icon
 from .toggle_button import ToggleButton
 
-from nicegui import ui
+from nicegui import ui, app
 button_help = None 
 button_menu = None
 menu_drawer = None

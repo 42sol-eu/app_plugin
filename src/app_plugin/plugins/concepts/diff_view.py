@@ -3,7 +3,7 @@ import yaml
 import shutil
 import zipfile
 from pathlib import Path
-from nicegui import ui
+from nicegui import ui, app
 from typing import List, Dict
 import difflib
 # TODO: make the code usable in app_plugin

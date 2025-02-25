@@ -12,7 +12,7 @@ description: |
 """
 
 # [Imports]
-from nicegui import ui
+from nicegui import ui, app
 
 # [Components]
 class message(ui.label):

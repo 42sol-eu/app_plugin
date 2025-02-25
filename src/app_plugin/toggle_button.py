@@ -1,6 +1,6 @@
 
 # [Imports]
-from nicegui import ui
+from nicegui import ui, app
 
 # [Code]
 class ToggleButton(ui.button):

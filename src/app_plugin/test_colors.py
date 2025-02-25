@@ -2,7 +2,7 @@
     file-name: test_colors.py
 """
 
-from nicegui import ui,app
+from nicegui import ui, app,app
 from nicegui.elements.mixins.color_elements import QUASAR_COLORS as colors_type 
 
 QUASAR_COLORS = {'primary', 'secondary', 'accent', 'dark', 'positive', 'negative', 'info', 'warning'}

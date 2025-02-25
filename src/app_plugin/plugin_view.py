@@ -1,7 +1,7 @@
 # plugin_view.py
 from nicegui.element import Element
 from stevedore.extension import ExtensionManager
-from nicegui import ui
+from nicegui import ui, app
 import logging
 
 logging.basicConfig(level=logging.INFO)
