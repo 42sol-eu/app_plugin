@@ -14,7 +14,8 @@ Application settings folder.
 
 # Contents
 
-- `custom_styles.css`:: main css for RST help view.
+- `custom_styles_light.css`:: main css for RST help view light.
+- `custom_styles_dark.css`:: main css for RST help view dark.
 
 ## NOTES:
 

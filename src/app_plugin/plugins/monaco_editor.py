@@ -62,8 +62,6 @@ class MonacoEditorPlugin(PluginView):
 
     def register_view(self, view_area) -> None:
         """Register the view area for rendering the output."""
-        print(f"Registering view area {view_area=}")
-        
         self.view_area = None
 
     def initialize_monaco_editor(self) -> None:

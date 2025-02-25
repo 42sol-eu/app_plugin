@@ -18,7 +18,11 @@ else:
 app.settings = {}
 app.settings['_docs'] = Path('./application_data/_docs')
 app.settings['_settings'] = Path('./application_data/_settings')
+app.add_media_files('/application_data/_docs', app.settings['_docs'])
+app.add_media_files('/application_data/_settings', app.settings['_settings'])
 
+app.settings['user_interface'] = {}
+app.settings['user_interface']['default_theme'] = {'value': False}
 from . import api_router_extended
 from . import settings_page
 from . import main_page
@@ -64,11 +68,8 @@ if __name__ == "__main__":
     print("Loading plugins")
     loaded_plugins = load_plugins()
     
-    
-
     print("Loading GUI")
     settings_page.SettingsPage(loaded_plugins)
-
     app.include_router(api_router_extended.router)
 
     # Create the menu with the loaded plugins

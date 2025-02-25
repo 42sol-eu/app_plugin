@@ -1,9 +1,8 @@
 /*
-file:         app_plugin/application_data/_settings/custom_style.css
+file:         app_plugin/application_data/_settings/custom_styles_dark.css
 file-id:      581e60aa-86bb-4a0c-9e6d-267e1c6f532d
 project:      app_plugin
 project-id:   dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
-using: jinja2
 description:  This file contains the folder application settings. |
     The folder is part of the `app_plugin` project.
 */
@@ -12,24 +11,25 @@ body {
     font-family: Arial, sans-serif;
     margin: 5px;
     padding: 5px;
-    background-color: #f0f0f0;
+    background-color: #333333;
+    color: #ffffff;
 }
 
 h1 {
-    color: #0000AA;
+    color: #ffffff;
     font-weight: bold;
     font-size: 24px;
     line-height: 1.2;
-    border-bottom: 2px solid #0000AA; /* Add a line under h1 */
+    border-bottom: 2px solid #ffffff; /* Add a line under h1 */
     padding-bottom: 3px; /* Add some space between the text and the line */
 }
 
 h2 {
-    color: #0000AA;
+    color: #ffffff;
     font-weight: bold;
     font-size: 18px;
     line-height: 1.2;
-    border-bottom: 2px solid #0000AA; /* Add a line under h2 */
+    border-bottom: 2px solid #ffffff; /* Add a line under h2 */
     padding-bottom: 2px; /* Add some space between the text and the line */
 }
 
@@ -44,18 +44,18 @@ ol {
 }
 
 .code {
-    background-color: #dddddd;
+    background-color: #444444;
     margin: 20px;
     padding: 10px;
     font-family: monospace;
-    border: 1px solid #cccccc;
+    border: 1px solid #555555;
     border-radius: 5px;
 }
 
 /* Note box */
 .note {
     border-left: 5px solid #007bff;
-    background-color: #e7f3ff;
+    background-color: #333333;
     padding: 10px;
     margin: 30px 0;
     padding-left: 40px;
@@ -73,7 +73,7 @@ ol {
 /* Warning box */
 .warning {
     border-left: 5px solid #ff0000;
-    background-color: #ffe7e7;
+    background-color: #333333;
     padding: 10px;
     margin: 30px 0;
     padding-left: 40px;
@@ -92,7 +92,7 @@ ol {
 /* Tip box */
 .tip {
     border-left: 5px solid #28a745;
-    background-color: #e7ffe7;
+    background-color: #333333;
     padding: 10px;
     margin: 30px 0;
     padding-left: 40px;
@@ -110,7 +110,7 @@ ol {
 /* Important box */
 .important {
     border-left: 5px solid #ffc107;
-    background-color: #fff7e7;
+    background-color: #333333;
     padding: 10px;
     margin: 30px 0;
     padding-left: 40px;

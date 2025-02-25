@@ -12,7 +12,8 @@ Info
 
 .. note::
     Do edit this file to provide information about the application.
-    
+
+
 Usage
 -----
 

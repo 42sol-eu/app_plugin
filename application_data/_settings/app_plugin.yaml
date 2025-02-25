@@ -1,0 +1,19 @@
+_description: This file contains application parameters. | The file contains all setting
+  of the `app_plugin` main application.
+_file: _settings/app_plugin.yaml
+_file-id: 4f8898e1-3252-4384-b4ae-fb778a674808
+_project: app_plugin
+_project-id: dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
+user_interface:
+  auto_execute_code_on_save:
+    help: Execute code automatically when saving a file
+    type: switch
+    value: true
+  default_theme:
+    help: The default theme of the user interface
+    type: switch
+    value: true
+  language:
+    help: The language of the user interface
+    type: text
+    value: de.DE

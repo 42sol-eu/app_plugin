@@ -1,0 +1,20 @@
+_description: This file contains viewer parameters. | The file contains all setting
+  of the `app_plugin` main application.
+_file: _settings/viewer.yaml
+_file-id: 7f6cc2b0-b426-46c9-b776-d74bc28d17a9
+_project: app_plugin
+_project-id: dfd94fa7-1f2f-4784-901f-dcba7ffc5ef9
+user_interface:
+  editor_font_size:
+    help: The font size of the code editor interface
+    type: number
+    value: 21.0
+  editor_theme:
+    help: The default theme of the code editor interface
+    type: switch
+    value: true
+  language:
+    help: language for the code editor
+    options: Python, Java_Script, RST, Markdown
+    type: select
+    value: RST
